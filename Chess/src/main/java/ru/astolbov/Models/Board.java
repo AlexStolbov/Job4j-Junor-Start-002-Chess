@@ -36,14 +36,9 @@ public class Board {
     private Cell[][] createBoardStructure() {
         Cell[][] boardStructure = new Cell[sizeOfBoard][sizeOfBoard];
 
-        for (int horizontal = 0; horizontal < this.sizeOfBoard; horizontal++) {
-            for (int vertical = 0; vertical < this.sizeOfBoard; vertical++) {
-
-                //Colors cc = colorOfPoint(horizontal, vertical);
-                //Cell nc = new Cell(horizontal, vertical, cc);
-                //cells[horizontal][vertical] = nc;
-
-                boardStructure[horizontal][vertical] = new Cell(horizontal, vertical, colorOfPoint(horizontal, vertical));
+        for (int vertical = 0; vertical < this.sizeOfBoard; vertical++) {
+            for (int horizontal = 0; horizontal < this.sizeOfBoard; horizontal++) {
+                boardStructure[vertical][horizontal] = new Cell(vertical, horizontal, colorOfPoint(horizontal, vertical));
             }
         }
         return boardStructure;
@@ -88,10 +83,10 @@ public class Board {
      */
     public Cell cellContainingFigure(Figure figureFind) {
         Cell findCell = null;
-        for (int horizontal = 0; horizontal < sizeOfBoard - 1; horizontal++) {
-            for (int vertical = 0; vertical < sizeOfBoard - 1; vertical++) {
-                Cell currCell = cells[horizontal][vertical];
-                if (currCell.getFigure() == figureFind) {
+        for (int vertical = 0; vertical < sizeOfBoard - 1; vertical++) {
+            for (int horizontal = 0; horizontal < sizeOfBoard - 1; horizontal++) {
+                Cell currCell = cells[vertical][horizontal];
+                if (currCell.getFigure().equals(figureFind)) {
                     findCell = currCell;
                     break;
                 }
@@ -110,26 +105,58 @@ public class Board {
      * @return диагональ
      */
     public Cell[] diagonalBetweenCells(Cell fromCell, Cell toCell) {
-        int fromHorizontal = fromCell.getHorizontal();
         int fromVertical = fromCell.getVertical();
-        int toHorizontal = toCell.getHorizontal();
+        int fromHorizontal = fromCell.getHorizontal();
         int toVertical = toCell.getVertical();
+        int toHorizontal = toCell.getHorizontal();
 
         Cell[] diag = null;
         if (Math.abs(fromHorizontal - toHorizontal) == Math.abs(fromVertical - toVertical)) {
 
-            //заглушка
-            diag = new Cell[4];
-            diag[0] = cells[1][1];
-            diag[1] = cells[2][2];
-            diag[2] = cells[3][3];
-            diag[3] = cells[4][4];
-            //
-
+            diag = new Cell[Math.abs(fromVertical - toVertical)];
+            boolean direct = fromVertical < toVertical;
+            int index = 0;
+            for (int currVertical = diagonalStart(fromVertical, direct); diagonalCondition(currVertical, toVertical, direct); currVertical = diagonalIncrement(currVertical, direct)) {
+                int currHorizontal = (toHorizontal - fromHorizontal) * (currVertical - fromVertical) / (toVertical - fromVertical) + fromHorizontal;
+                diag[index] = cells[currVertical][currHorizontal];
+                index++;
+            }
         }
 
         return diag;
     }
+
+    /**
+     * Возвращает начальную вертикаль в диагонали от стартовой вертикали в зависимости от направления.
+     * @param fromVert - стартовая вертикаль
+     * @param direct - направление
+     * @return начальная вертикаль
+     */
+    private int diagonalStart(int fromVert, final boolean direct) {
+        return direct ? ++fromVert : --fromVert;
+    }
+
+    /**
+     * Возвращает условие для направления движения по диагонали в зависимости от направления.
+     * @param currVert - текущая вертикаль
+     * @param toVert - конечная вертикаль
+     * @param direct - направление, true - увеличение, false - уменьшение номера вертикали.
+     * @return - признак достижения текущей вертикали до конечной
+     */
+    private boolean diagonalCondition(final int currVert, final int toVert, final boolean direct) {
+        return direct ? currVert <= toVert : currVert >= toVert;
+    }
+
+    /**
+     *Возвращает следующую вертикаль после текущей в зависимости от направления.
+     * @param currVertical - текущая вертикаль
+     * @param direct - направление
+     * @return - следующая вертикаль
+     */
+    private int diagonalIncrement(int currVertical, final boolean direct) {
+        return direct ? ++currVertical : --currVertical;
+    }
+
 
     /**
      * Возвращает горизонталь (набор ячеек), проходящую от первой ко второй ячейке.
