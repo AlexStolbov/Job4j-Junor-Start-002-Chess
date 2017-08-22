@@ -28,9 +28,9 @@ public class Cell {
      * @param setVertical вертикаль ячейки
      * @param setColor цвет
      */
-    public Cell(int setHorizontal, int setVertical, Colors setColor) {
-        this.horizontal = setHorizontal;
+    public Cell(int setVertical, int setHorizontal, Colors setColor) {
         this.vertical = setVertical;
+        this.horizontal = setHorizontal;
         this.color = setColor;
         this.figure = null;
     }
