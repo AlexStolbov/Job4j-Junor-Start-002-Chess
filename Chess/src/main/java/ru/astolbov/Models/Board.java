@@ -116,7 +116,7 @@ public class Board {
             diag = new Cell[Math.abs(fromVertical - toVertical)];
             boolean direct = fromVertical < toVertical;
             int index = 0;
-            for (int currVertical = diagonalStart(fromVertical, direct); diagonalCondition(currVertical, toVertical, direct); currVertical = diagonalIncrement(currVertical, direct)) {
+            for (int currVertical = wayStart(fromVertical, direct); wayCondition(currVertical, toVertical, direct); currVertical = wayIncrement(currVertical, direct)) {
                 int currHorizontal = (toHorizontal - fromHorizontal) * (currVertical - fromVertical) / (toVertical - fromVertical) + fromHorizontal;
                 diag[index] = cells[currVertical][currHorizontal];
                 index++;
@@ -132,7 +132,7 @@ public class Board {
      * @param direct - направление
      * @return начальная вертикаль
      */
-    private int diagonalStart(int fromVert, final boolean direct) {
+    private int wayStart(int fromVert, final boolean direct) {
         return direct ? ++fromVert : --fromVert;
     }
 
@@ -143,7 +143,7 @@ public class Board {
      * @param direct - направление, true - увеличение, false - уменьшение номера вертикали.
      * @return - признак достижения текущей вертикали до конечной
      */
-    private boolean diagonalCondition(final int currVert, final int toVert, final boolean direct) {
+    private boolean wayCondition(final int currVert, final int toVert, final boolean direct) {
         return direct ? currVert <= toVert : currVert >= toVert;
     }
 
@@ -153,33 +153,62 @@ public class Board {
      * @param direct - направление
      * @return - следующая вертикаль
      */
-    private int diagonalIncrement(int currVertical, final boolean direct) {
+    private int wayIncrement(int currVertical, final boolean direct) {
         return direct ? ++currVertical : --currVertical;
     }
 
-
     /**
-     * Возвращает горизонталь (набор ячеек), проходящую от первой ко второй ячейке.
+     * Возвращает путь (набор ячеек) по вертикали, проходящую от первой ко второй ячейке.
      * @param fromCell первая ячейка
      * @param toCell вторая ячейка
-     * @return горизонталь
+     * @return набор ячеек
      */
-    public Cell[] horizontalBetweenCells(Cell fromCell, Cell toCell) {
+    public Cell[] verticalWayBetweenCells(Cell fromCell, Cell toCell) {
+        int fromVertical = fromCell.getVertical();
+        int fromHorizontal = fromCell.getHorizontal();
+        int toVertical = toCell.getVertical();
+        int toHorizontal = toCell.getHorizontal();
+
         Cell[] horizontal = null;
+        if (fromVertical == toVertical) {
+
+            horizontal = new Cell[Math.abs(fromHorizontal - toHorizontal)];
+            boolean direct = fromHorizontal < toHorizontal;
+            int index = 0;
+            for (int currHorizontal = wayStart(fromHorizontal, direct); wayCondition(currHorizontal, toHorizontal, direct); currHorizontal = wayIncrement(currHorizontal, direct)) {
+                horizontal[index] = cells[fromCell.getVertical()][currHorizontal];
+                index++;
+            }
+        }
 
         return horizontal;
     }
 
     /**
-     * Возвращает вертикаль (набор ячеек), проходящую от первой ко второй ячейке.
+     * Возвращает путь (набор ячеек) по горизонтали, проходящую от первой ко второй ячейке.
      * @param fromCell первая ячейка
      * @param toCell вторая ячейка
-     * @return вертикаль
+     * @return набор ячеек
      */
-    public Cell[] verticalBetweenCells(Cell fromCell, Cell toCell) {
-        Cell[] horizontal = null;
+    public Cell[] horizontalWayBetweenCells(Cell fromCell, Cell toCell) {
+        int fromVertical = fromCell.getVertical();
+        int fromHorizontal = fromCell.getHorizontal();
+        int toVertical = toCell.getVertical();
+        int toHorizontal = toCell.getHorizontal();
 
-        return horizontal;
+        Cell[] vertical = null;
+        if (fromHorizontal == toHorizontal) {
+
+            vertical = new Cell[Math.abs(fromVertical - toVertical)];
+            boolean direct = fromVertical < toVertical;
+            int index = 0;
+            for (int currVertical = wayStart(fromVertical, direct); wayCondition(currVertical, toVertical, direct); currVertical = wayIncrement(currVertical, direct)) {
+                vertical[index] = cells[currVertical][fromCell.getHorizontal()];
+                index++;
+            }
+        }
+
+        return vertical;
     }
 
     /**

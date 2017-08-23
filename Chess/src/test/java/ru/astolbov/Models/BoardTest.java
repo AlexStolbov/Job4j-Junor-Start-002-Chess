@@ -26,6 +26,29 @@ public class BoardTest {
     }
 
     /**
+     * Выполняет ход и возвращает результат.
+     * @param board доска
+     * @param fromCell откуда ходим
+     * @param toCell куда ходим
+     * @return результат хода
+     */
+    private int resultMove(Board board, Cell fromCell, Cell toCell) {
+        int result = 0;
+        try {
+            if (board.move(fromCell, toCell)) {
+                result = 1;
+            }
+        } catch (OccupiedWayException ioe) {
+            result = 2;
+        } catch (ImpossibleMoveException ime) {
+            result = 3;
+        } catch (FigureNotFoundException fnfe) {
+            result = 4;
+        }
+        return result;
+    }
+
+    /**
      * Проверка корректного хода слона.
      */
     @Test
@@ -56,8 +79,6 @@ public class BoardTest {
 
             assertThat(result, is(1));
         }
-
-
     }
 
     /**
@@ -79,26 +100,87 @@ public class BoardTest {
     }
 
     /**
-     * Выполняет ход и возвращает результат.
-     * @param board доска
-     * @param fromCell откуда ходим
-     * @param toCell куда ходим
-     * @return результат хода
+     * Проверка получения пути по вертикали доски.
      */
-    private int resultMove(Board board, Cell fromCell, Cell toCell) {
-        int result = 0;
-        try {
-            if (board.move(fromCell, toCell)) {
-                result = 1;
+    @Test
+    public void whenGetVerticalWayThenReturnCorrectCells() {
+        Board board = new Board();
+
+        int[][] setCoordinate = new int[6][];
+        //структура вложенного массива fromVertical fromHorizontal toVertical toHorizontal
+        setCoordinate[0] = new int[]{5, 1, 5, 4};
+        setCoordinate[1] = new int[]{1, 1, 1, 7};
+        setCoordinate[2] = new int[]{3, 7, 3, 0};
+        setCoordinate[3] = new int[]{1, 7, 1, 4};
+        setCoordinate[4] = new int[]{4, 2, 4, 7};
+        setCoordinate[5] = new int[]{0, 0, 0, 6};
+
+        for (int i = 0; i < setCoordinate.length; i++) {
+
+            int fromVertical    = setCoordinate[i][0];
+            int fromHorizontal  = setCoordinate[i][1];
+            int toVertical      = setCoordinate[i][2];
+            int toHorizontal    = setCoordinate[i][3];
+
+            assertThat(fromVertical == toVertical, is(true));
+
+            Cell fromCell = board.getCells()[fromVertical][fromHorizontal];
+            Cell toCell = board.getCells()[toVertical][toHorizontal];
+            Cell[] testWay = board.verticalWayBetweenCells(fromCell, toCell);
+
+            //System.out.println(fromVertical + " " + fromHorizontal);
+
+            assertThat(testWay.length, is(Math.abs(fromHorizontal - toHorizontal)));
+
+            int currHorizontal = fromHorizontal;
+            for (int stepWay = 0; stepWay < testWay.length; stepWay++) {
+                assertThat(testWay[stepWay].getVertical() == fromVertical, is(true));
+                assertThat(Math.abs(testWay[stepWay].getHorizontal() - currHorizontal) == 1, is(true));
+                currHorizontal = testWay[stepWay].getHorizontal();
             }
-        } catch (OccupiedWayException ioe) {
-            result = 2;
-        } catch (ImpossibleMoveException ime) {
-            result = 3;
-        } catch (FigureNotFoundException fnfe) {
-            result = 4;
         }
-        return result;
+    }
+
+    /**
+     * Проверка получения пути по горизонтали доски.
+     */
+    @Test
+    public void whenGetHorizontalWayThenReturnCorrectCells() {
+        Board board = new Board();
+
+        int[][] setCoordinate = new int[6][];
+        //структура вложенного массива fromVertical fromHorizontal toVertical toHorizontal
+        setCoordinate[0] = new int[]{0, 0, 7, 0};
+        setCoordinate[1] = new int[]{1, 1, 7, 1};
+        setCoordinate[2] = new int[]{1, 7, 4, 7};
+        setCoordinate[3] = new int[]{6, 7, 3, 7};
+        setCoordinate[4] = new int[]{5, 7, 7, 7};
+        setCoordinate[5] = new int[]{7, 0, 0, 0};
+
+        for (int i = 0; i < setCoordinate.length; i++) {
+
+            int fromVertical    = setCoordinate[i][0];
+            int fromHorizontal  = setCoordinate[i][1];
+            int toVertical      = setCoordinate[i][2];
+            int toHorizontal    = setCoordinate[i][3];
+
+            assertThat(fromHorizontal == toHorizontal, is(true));
+
+            Cell fromCell = board.getCells()[fromVertical][fromHorizontal];
+            Cell toCell = board.getCells()[toVertical][toHorizontal];
+            Cell[] testWay = board.horizontalWayBetweenCells(fromCell, toCell);
+
+            System.out.println(fromVertical + " " + fromHorizontal);
+
+            assertThat(testWay.length, is(Math.abs(fromVertical - toVertical)));
+
+            int currVertical = fromVertical;
+            for (int stepWay = 0; stepWay < testWay.length; stepWay++) {
+                assertThat(testWay[stepWay].getHorizontal() == fromHorizontal, is(true));
+                assertThat(Math.abs(testWay[stepWay].getVertical() - currVertical) == 1, is(true));
+                currVertical = testWay[stepWay].getVertical();
+            }
+        }
     }
 
 }
