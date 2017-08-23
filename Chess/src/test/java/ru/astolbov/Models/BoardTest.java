@@ -30,15 +30,34 @@ public class BoardTest {
      */
     @Test
     public void whenMoveBishopOnValidCellThenReturnTrue() {
-        Board board = new Board();
-        Figure bishopB1 = new Bishop(Colors.Black);
-        Cell fromCell = board.getCells()[1][1];
-        Cell toCell = board.getCells()[4][4];
-        fromCell.setFigure(bishopB1);
+        int[][] setCoordinate = new int[6][];
+        //структура вложенного массива fromVertical fromHorizontal toVertical toHorizontal
+        setCoordinate[0] = new int[]{5, 3, 3, 1};
+        setCoordinate[1] = new int[]{1, 1, 7, 7};
+        setCoordinate[2] = new int[]{1, 7, 7, 1};
+        setCoordinate[3] = new int[]{3, 7, 7, 3};
+        setCoordinate[4] = new int[]{1, 7, 6, 2};
+        setCoordinate[5] = new int[]{0, 0, 6, 6};
 
-        int result = resultMove(board, fromCell, toCell);
+        for (int i = 0; i < setCoordinate.length; i++) {
+            int fromVertical    = setCoordinate[i][0];
+            int fromHorizontal  = setCoordinate[i][1];
+            int toVertical      = setCoordinate[i][2];
+            int toHorizontal    = setCoordinate[i][3];
+            Board board = new Board();
+            Figure bishopB1 = new Bishop(Colors.Black);
+            Cell fromCell = board.getCells()[fromVertical][fromHorizontal];
+            Cell toCell = board.getCells()[toVertical][toHorizontal];
+            fromCell.setFigure(bishopB1);
 
-        assertThat(result, is(1));
+            int result = resultMove(board, fromCell, toCell);
+
+            //System.out.println(fromVertical + " " + fromHorizontal);
+
+            assertThat(result, is(1));
+        }
+
+
     }
 
     /**

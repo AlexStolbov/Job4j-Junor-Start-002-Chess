@@ -22,7 +22,8 @@ public class Bishop extends Figure {
     @Override
     public Cell[] way(Board board, Cell dist) throws ImpossibleMoveException {
 
-        Cell[] diagonal = board.diagonalBetweenCells(board.cellContainingFigure(this), dist);
+        Cell startCell = board.cellContainingFigure(this);
+        Cell[] diagonal = board.diagonalBetweenCells(startCell, dist);
 
         if (diagonal == null) {
             throw new ImpossibleMoveException();

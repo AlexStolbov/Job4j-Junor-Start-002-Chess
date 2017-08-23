@@ -83,16 +83,16 @@ public class Board {
      */
     public Cell cellContainingFigure(Figure figureFind) {
         Cell findCell = null;
-        for (int vertical = 0; vertical < sizeOfBoard - 1; vertical++) {
-            for (int horizontal = 0; horizontal < sizeOfBoard - 1; horizontal++) {
+        for (int vertical = 0; vertical < sizeOfBoard; vertical++) {
+            for (int horizontal = 0; horizontal < sizeOfBoard; horizontal++) {
                 Cell currCell = cells[vertical][horizontal];
-                if (currCell.getFigure().equals(figureFind)) {
+                if (currCell.getFigure() != null && currCell.getFigure().equals(figureFind)) {
                     findCell = currCell;
                     break;
+                    }
                 }
-                if (findCell != null) {
-                    break;
-                }
+            if (findCell != null) {
+                break;
             }
         }
         return findCell;
@@ -197,7 +197,8 @@ public class Board {
             throw new FigureNotFoundException();
         }
 
-        Cell[] way = source.getFigure().way(this, dist);
+        Figure movingFigure = source.getFigure();
+        Cell[] way = movingFigure.way(this, dist);
 
         for (Cell currCell : way) {
             if (currCell != source) {
@@ -207,6 +208,8 @@ public class Board {
             }
         }
 
+        source.setFigure(null);
+        dist.setFigure(movingFigure);
         return true;
     }
 }
