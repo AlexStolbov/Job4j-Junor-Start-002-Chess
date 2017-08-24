@@ -165,22 +165,16 @@ public class Board {
      */
     public Cell[] verticalWayBetweenCells(Cell fromCell, Cell toCell) {
         int fromVertical = fromCell.getVertical();
-        int fromHorizontal = fromCell.getHorizontal();
-        int toVertical = toCell.getVertical();
-        int toHorizontal = toCell.getHorizontal();
 
         Cell[] horizontal = null;
-        if (fromVertical == toVertical) {
+        if (fromVertical == toCell.getVertical()) {
 
-            horizontal = new Cell[Math.abs(fromHorizontal - toHorizontal)];
-            boolean direct = fromHorizontal < toHorizontal;
-            int index = 0;
-            for (int currHorizontal = wayStart(fromHorizontal, direct); wayCondition(currHorizontal, toHorizontal, direct); currHorizontal = wayIncrement(currHorizontal, direct)) {
-                horizontal[index] = cells[fromCell.getVertical()][currHorizontal];
-                index++;
+            int[] line = getLine(fromCell.getHorizontal(), toCell.getHorizontal());
+            horizontal = new Cell[line.length];
+            for (int i = 0; i < line.length; i++) {
+                horizontal[i] = cells[fromVertical][line[i]];
             }
         }
-
         return horizontal;
     }
 
@@ -191,24 +185,35 @@ public class Board {
      * @return набор ячеек
      */
     public Cell[] horizontalWayBetweenCells(Cell fromCell, Cell toCell) {
-        int fromVertical = fromCell.getVertical();
         int fromHorizontal = fromCell.getHorizontal();
-        int toVertical = toCell.getVertical();
-        int toHorizontal = toCell.getHorizontal();
 
         Cell[] vertical = null;
-        if (fromHorizontal == toHorizontal) {
+        if (fromHorizontal == toCell.getHorizontal()) {
 
-            vertical = new Cell[Math.abs(fromVertical - toVertical)];
-            boolean direct = fromVertical < toVertical;
-            int index = 0;
-            for (int currVertical = wayStart(fromVertical, direct); wayCondition(currVertical, toVertical, direct); currVertical = wayIncrement(currVertical, direct)) {
-                vertical[index] = cells[currVertical][fromCell.getHorizontal()];
-                index++;
+            int[] line = getLine(fromCell.getVertical(), toCell.getVertical());
+            vertical = new Cell[line.length];
+            for (int i = 0; i < line.length; i++) {
+                vertical[i] = cells[line[i]][fromHorizontal];
             }
         }
-
         return vertical;
+    }
+
+    /**
+     * Line.
+     * @param varFrom start
+     * @param varTo finish
+     * @return index
+     */
+    private int[] getLine(int varFrom, int varTo) {
+        int[] line = new int[Math.abs(varFrom - varTo)];
+        boolean direct = varFrom < varTo;
+        int index = 0;
+        for (int currLine = wayStart(varFrom, direct); wayCondition(currLine, varTo, direct); currLine = wayIncrement(currLine, direct)) {
+            line[index] = currLine;
+            index++;
+        }
+        return line;
     }
 
     /**

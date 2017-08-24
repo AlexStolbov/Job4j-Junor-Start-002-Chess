@@ -170,7 +170,7 @@ public class BoardTest {
             Cell toCell = board.getCells()[toVertical][toHorizontal];
             Cell[] testWay = board.horizontalWayBetweenCells(fromCell, toCell);
 
-            System.out.println(fromVertical + " " + fromHorizontal);
+            //System.out.println(fromVertical + " " + fromHorizontal);
 
             assertThat(testWay.length, is(Math.abs(fromVertical - toVertical)));
 
