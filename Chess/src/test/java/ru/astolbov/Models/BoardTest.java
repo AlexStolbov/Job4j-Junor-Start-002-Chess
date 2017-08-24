@@ -5,6 +5,7 @@ import ru.astolbov.Exceptoins.FigureNotFoundException;
 import ru.astolbov.Exceptoins.ImpossibleMoveException;
 import ru.astolbov.Exceptoins.OccupiedWayException;
 import ru.astolbov.Models.Figures.Bishop;
+import ru.astolbov.Models.Figures.Pawns;
 
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -181,6 +182,22 @@ public class BoardTest {
                 currVertical = testWay[stepWay].getVertical();
             }
         }
+    }
+
+    /**
+     * Move the pawn along the right path.
+     */
+    @Test
+    public void whenMovePawnOnCorrectWayThenGetCellsArray() {
+
+        Board board = new Board();
+        Figure pawns = new Pawns(Colors.Black);
+        Cell fromCell = board.getCells()[1][1];
+        Cell toCell = board.getCells()[1][2];
+        fromCell.setFigure(pawns);
+
+        int result = resultMove(board, fromCell, toCell);
+        assertThat(result, is(1));
     }
 
 }
