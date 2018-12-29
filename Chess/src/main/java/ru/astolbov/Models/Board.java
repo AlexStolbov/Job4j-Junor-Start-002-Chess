@@ -4,6 +4,8 @@ import ru.astolbov.Exceptoins.FigureNotFoundException;
 import ru.astolbov.Exceptoins.ImpossibleMoveException;
 import ru.astolbov.Exceptoins.OccupiedWayException;
 
+import java.util.Arrays;
+
 /**
  * Шахматная доска.
  */
@@ -82,20 +84,7 @@ public class Board {
      * @return ячейка
      */
     public Cell cellContainingFigure(Figure figureFind) {
-        Cell findCell = null;
-        for (int vertical = 0; vertical < sizeOfBoard; vertical++) {
-            for (int horizontal = 0; horizontal < sizeOfBoard; horizontal++) {
-                Cell currCell = cells[vertical][horizontal];
-                if (currCell.getFigure() != null && currCell.getFigure().equals(figureFind)) {
-                    findCell = currCell;
-                    break;
-                    }
-                }
-            if (findCell != null) {
-                break;
-            }
-        }
-        return findCell;
+        return Arrays.stream(cells).flatMap(vert -> Arrays.stream(vert)).filter(el -> el.getFigure() != null && el.getFigure().equals(figureFind)).findAny().get();
     }
 
     /**
